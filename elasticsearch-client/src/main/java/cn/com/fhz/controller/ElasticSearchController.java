@@ -1,5 +1,6 @@
 package cn.com.fhz.controller;
 
+import cn.com.fhz.component.ElasticsearchComponent;
 import cn.com.fhz.config.Config;
 import cn.com.fhz.constant.Constant;
 import cn.com.fhz.utils.CommonUtils;
@@ -7,13 +8,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.netflix.discovery.converters.Auto;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContent;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +45,9 @@ public class ElasticSearchController {
     @Autowired
     CommonUtils commonUtils;
 
+    @Autowired
+    ElasticsearchComponent elasticsearchComponent;
+
     /**
      *单个索引增加
      * @param id 操作的索引id
@@ -50,14 +60,15 @@ public class ElasticSearchController {
 
         //存储操作的结果
         JSONObject result = new JSONObject();
+        RestHighLevelClient client = null;
         try {
            //转化后的表
            String type = clazz.getSimpleName();
 
 
 
-           RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(
-                   new HttpHost(config.index, config.port, config.schme)));
+           client = new RestHighLevelClient(RestClient.builder(
+                   new HttpHost(config.url, config.port, config.schme)));
 
 
            IndexRequest indexRequest = null;
@@ -91,6 +102,8 @@ public class ElasticSearchController {
 
        }finally {
 
+            ElasticsearchComponent.closeResurse(client);
+
            return  result;
 
        }
@@ -99,8 +112,50 @@ public class ElasticSearchController {
     @RequestMapping("addIndexs")
     public Object addIndex(List<String> dataList,Class clazz){
 
+        JSONObject result = new JSONObject();
+        RestHighLevelClient client = null;
 
-        return  null;
+        try {
+
+            client = elasticsearchComponent.getClient();
+
+            String type = clazz.getSimpleName();
+
+            BulkRequest bulkRequest = new BulkRequest();
+
+            for (String data: dataList
+                 ) {
+                bulkRequest.add(new IndexRequest(config.index,type).source(data,
+                        XContentType.JSON));
+            }
+            BulkResponse bulkResponse = client.bulk(bulkRequest);
+
+            int create = 0;
+            int update = 0;
+
+            for (BulkItemResponse bulkItemResponse: bulkResponse
+                 ) {
+                if (bulkItemResponse.getOpType()== DocWriteRequest.OpType.INDEX||
+                        bulkItemResponse.getOpType()==DocWriteRequest.OpType.CREATE){
+                    logger.info("创建成功");
+                    create++;
+                }else if (bulkItemResponse.getOpType()==DocWriteRequest.OpType.UPDATE){
+                    logger.info("更新成功");
+                    update++;
+                }
+            }
+            commonUtils.putValue2Result(result,Constant.BATCH_OP);
+            result.put("create_num",create);
+            result.put("update_num",update);
+        }catch (Exception e){
+            e.printStackTrace();
+            commonUtils.putValue2Result(result,Constant.ERROR);
+        }finally {
+            ElasticsearchComponent.closeResurse(client);
+            return result;
+        }
+
+
     }
 
 }

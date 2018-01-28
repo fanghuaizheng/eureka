@@ -11,12 +11,16 @@ import org.springframework.context.annotation.Configuration;
 public class Config {
 
     @Value("${elasticsearch.url:127.0.0.1}")
-    public String index;
+    public String url;
+
 
     @Value("${elasticsearch.port:9200}")
     public Integer port;
 
-    @Value("${elasticsearch.schme}")
+    @Value("${elasticsearch.index}")
+    public String index;
+
+    @Value("${elasticsearch.schme:http}")
     public String schme;
 
 }

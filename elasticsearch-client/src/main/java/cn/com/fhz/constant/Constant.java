@@ -5,7 +5,9 @@ package cn.com.fhz.constant;
  */
 public enum Constant {
 
-    CREATE(200,"创建成功"),UPDATE(201,"更新成功"),ERROR(500,"服务器错误");
+    CREATE(200,"创建成功"),UPDATE(201,"更新成功"),
+    BATCH_OP(202,"批操作成功"),
+    ERROR(500,"服务器错误");
 
     private Integer code;
 
