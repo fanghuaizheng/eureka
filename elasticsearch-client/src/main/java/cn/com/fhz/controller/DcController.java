@@ -35,7 +35,7 @@ public class DcController {
     //获取传参的类名称
     @GetMapping("clazz")
     public String testClazz(Class clazz){
-        return clazz.getName();
+        return clazz.getSimpleName();
     }
 
 
