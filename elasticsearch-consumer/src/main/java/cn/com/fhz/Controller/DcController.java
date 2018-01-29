@@ -30,4 +30,23 @@ public class DcController {
 
     }
 
+    @GetMapping("add")
+    public Integer add(Integer a,String b){
+        ServiceInstance instance = loadBalancerClient.choose("elasticsearch-client");
+        String url = "http://"+instance.getHost()+":"+instance.getPort()+"add?a="+a+"&b="+b;
+        System.out.println(url);
+        return restTemplate.getForObject(url,Integer.class);
+    }
+
+    @GetMapping("testClazz")
+    public String testClazz(){
+        ServiceInstance instance = loadBalancerClient.choose("elasticsearch-client");
+
+        String url = "http://"+instance.getHost()+":"+instance.getPort()+"/clazz?clazz="+Integer.class.getName();
+
+        System.out.println(url);
+        return restTemplate.getForObject(url,String.class);
+
+    }
+
 }
