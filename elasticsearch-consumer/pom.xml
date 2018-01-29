@@ -79,14 +79,13 @@
 			<!--<version>11.2.0.4.0</version>-->
 			<!--&lt;!&ndash;<scope>test</scope>&ndash;&gt;-->
 		<!--</dependency>-->
-
-
-
-
-
 		<!--数据库配置 end-->
 
-
+		<dependency>
+			<groupId>cn.com.fhz</groupId>
+			<artifactId>elasticsearch-base</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 	<dependencyManagement>
