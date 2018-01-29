@@ -80,12 +80,17 @@
 			<!--&lt;!&ndash;<scope>test</scope>&ndash;&gt;-->
 		<!--</dependency>-->
 
-
-
-
-
 		<!--数据库配置 end-->
 
+		<!--普通的依赖 start-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.44</version>
+		</dependency>
+
+
+		<!--普通的依赖 send-->
 
 
 	</dependencies>

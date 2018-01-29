@@ -24,7 +24,9 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.List;
  * Created by hzfang on 2018/1/26.
  */
 @RestController
+@RequestMapping("elasticsearch")
 public class ElasticSearchController {
 
     private static Logger logger = LoggerFactory.getLogger(ElasticSearchController.class);
@@ -48,6 +51,13 @@ public class ElasticSearchController {
     @Autowired
     ElasticsearchComponent elasticsearchComponent;
 
+    @RequestMapping("add")
+    public Integer add(@RequestParam("a")Integer a, @RequestParam Integer b){
+
+        return a+b;
+
+    }
+
     /**
      *单个索引增加
      * @param id 操作的索引id
@@ -56,57 +66,60 @@ public class ElasticSearchController {
      * @return
      */
     @RequestMapping("addIndex")
-    public Object addIndex(String id,String data,Class clazz){
+    public Object addIndex(@RequestParam("id") String id,@RequestParam("data") String data,
+                           @RequestParam("clazz") Class clazz){
 
-        //存储操作的结果
-        JSONObject result = new JSONObject();
-        RestHighLevelClient client = null;
-        try {
-           //转化后的表
-           String type = clazz.getSimpleName();
+        return data;
 
+//        //存储操作的结果
+//        JSONObject result = new JSONObject();
+//        RestHighLevelClient client = null;
+//        try {
+//           //转化后的表
+//           String type = clazz.getSimpleName();
+//
+//
+//
+//           client = new RestHighLevelClient(RestClient.builder(
+//                   new HttpHost(config.url, config.port, config.schme)));
+//
+//
+//           IndexRequest indexRequest = null;
+//           if (StringUtils.isNotBlank(id)){
+//               indexRequest = new IndexRequest(config.index,type,id);
+//           }else {
+//               indexRequest = new IndexRequest(config.index, type);
+//
+//           }
+//
+//            indexRequest.source(data, XContentType.JSON);
+//
+//           IndexResponse indexResponse = client.index(indexRequest);
+//           if (indexResponse.getResult()== DocWriteResponse.Result.CREATED){
+//
+//               logger.info("创建成功");
+//
+//               commonUtils.putValue2Result(result,Constant.CREATE);
+//
+//
+//           }else if (indexResponse.getResult()==DocWriteResponse.Result.UPDATED){
+//               logger.info("更新成功");
+//
+//               commonUtils.putValue2Result(result,Constant.UPDATE);
+//
+//           }
+//
+//       }catch (Exception e){
+//           e.printStackTrace();
+//           commonUtils.putValue2Result(result,Constant.ERROR);
+//
+//       }finally {
+//
+//            ElasticsearchComponent.closeResurse(client);
+//
+//           return  result;
 
-
-           client = new RestHighLevelClient(RestClient.builder(
-                   new HttpHost(config.url, config.port, config.schme)));
-
-
-           IndexRequest indexRequest = null;
-           if (StringUtils.isNotBlank(id)){
-               indexRequest = new IndexRequest(config.index,type,id);
-           }else {
-               indexRequest = new IndexRequest(config.index, type);
-
-           }
-
-            indexRequest.source(data, XContentType.JSON);
-
-           IndexResponse indexResponse = client.index(indexRequest);
-           if (indexResponse.getResult()== DocWriteResponse.Result.CREATED){
-
-               logger.info("创建成功");
-
-               commonUtils.putValue2Result(result,Constant.CREATE);
-
-
-           }else if (indexResponse.getResult()==DocWriteResponse.Result.UPDATED){
-               logger.info("更新成功");
-
-               commonUtils.putValue2Result(result,Constant.UPDATE);
-
-           }
-
-       }catch (Exception e){
-           e.printStackTrace();
-           commonUtils.putValue2Result(result,Constant.ERROR);
-
-       }finally {
-
-            ElasticsearchComponent.closeResurse(client);
-
-           return  result;
-
-       }
+//       }
     }
 
     @RequestMapping("addIndexs")

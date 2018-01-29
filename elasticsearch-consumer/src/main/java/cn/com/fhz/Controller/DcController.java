@@ -1,5 +1,6 @@
 package cn.com.fhz.Controller;
 
+import cn.com.fhz.entity.AdEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
@@ -33,7 +34,7 @@ public class DcController {
     @GetMapping("add")
     public Integer add(Integer a,String b){
         ServiceInstance instance = loadBalancerClient.choose("elasticsearch-client");
-        String url = "http://"+instance.getHost()+":"+instance.getPort()+"add?a="+a+"&b="+b;
+        String url = "http://"+instance.getHost()+":"+instance.getPort()+"/dc/add?a="+a+"&b="+b;
         System.out.println(url);
         return restTemplate.getForObject(url,Integer.class);
     }
@@ -42,7 +43,7 @@ public class DcController {
     public String testClazz(){
         ServiceInstance instance = loadBalancerClient.choose("elasticsearch-client");
 
-        String url = "http://"+instance.getHost()+":"+instance.getPort()+"/clazz?clazz="+Integer.class.getName();
+        String url = "http://"+instance.getHost()+":"+instance.getPort()+"/clazz?clazz="+ AdEntity.class.getName();
 
         System.out.println(url);
         return restTemplate.getForObject(url,String.class);

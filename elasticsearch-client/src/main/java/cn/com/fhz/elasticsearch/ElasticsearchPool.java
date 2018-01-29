@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by hzfang on 2018/1/26.
+ * 后期准备做连接池设置
  */
 @Component
 public class ElasticsearchPool {
