@@ -92,6 +92,11 @@
 
 		<!--普通的依赖 send-->
 
+		<dependency>
+			<groupId>cn.com.fhz</groupId>
+			<artifactId>elasticsearch-base</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 	<dependencyManagement>

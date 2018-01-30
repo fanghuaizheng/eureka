@@ -5,8 +5,8 @@ import cn.com.fhz.entity.AdEntity;
 import java.util.List;
 
 /**
- * Created by hzfang on 2018/1/29.
+ * Created by woni on 18/1/29.
  */
 public interface AdService {
-    List<AdEntity> finaAll();
+    List<AdEntity> findAll();
 }

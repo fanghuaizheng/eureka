@@ -1,8 +1,5 @@
 package cn.com.fhz.entity;
 
-import org.omg.CORBA.INTERNAL;
-
-import javax.annotation.Generated;
 import javax.persistence.*;
 import java.util.Date;
 

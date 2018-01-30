@@ -6,8 +6,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by hzfang on 2018/1/29.
+ * Created by woni on 18/1/29.
  */
 @Repository
-public interface AdDAO extends JpaRepository<AdEntity,Integer>,PagingAndSortingRepository<AdEntity,Integer> {
+public interface AdDao extends JpaRepository<AdEntity,Integer>,PagingAndSortingRepository<AdEntity,Integer>{
 }
