@@ -85,16 +85,13 @@
 			<version>1.2.44</version>
 		</dependency>
 
-
-		<!--普通的依赖 send-->
-
+		<!--普通的依赖 end-->
 
 		<dependency>
 			<groupId>cn.com.fhz</groupId>
 			<artifactId>elasticsearch-base</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 
 
 	</dependencies>

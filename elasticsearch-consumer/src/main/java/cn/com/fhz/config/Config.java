@@ -16,4 +16,10 @@ public class Config {
     @Value("${elasticsearch.addIndexs}")
     public String addIndexs;
 
+    @Value("${elasticsearch.search}")
+    public String searchUrl;
+
+    @Value("${elasticsearch.client}")
+    public String client;
+
 }
