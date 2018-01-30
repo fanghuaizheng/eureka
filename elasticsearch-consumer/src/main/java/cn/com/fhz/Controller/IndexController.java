@@ -2,24 +2,20 @@ package cn.com.fhz.Controller;
 
 import cn.com.fhz.config.Config;
 import cn.com.fhz.entity.AdEntity;
-import cn.com.fhz.entity.TUmpCmsContent;
 import cn.com.fhz.service.AdService;
-import cn.com.fhz.service.TUmpContentService;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,27 +54,31 @@ public class IndexController {
     @RequestMapping("addAll")
     public Object insertAllContent2Index() throws Exception {
 
-        List<AdEntity> contents = adService.finaAll();
+        List<AdEntity> contents = adService.findAll();
 
         List<String> dataList = new ArrayList<>();
         ServiceInstance instance = loadBalancerClient.choose("elasticsearch-client");
 
-        String url = "http://"+instance.getHost()+":"+instance.getPort()+config.addIndex+"?";
-        String data = JSONObject.toJSONString(contents.get(0));
-        url = url.concat("id="+contents.get(0).getId().toString()+"&data="+123+"&clazz="+AdEntity.class);
-//        for (AdEntity content: contents
-//             ) {
-//
-//            String data = JSONObject.toJSONString(content);
-//            url = url.concat("dataList=").concat(URLEncoder.encode(data,"UTF-8")).concat("&");
-////            dataList.add(URLEncoder.encode(data,"UTF-8"));
-//            logger.info("获取的数据{}"+data);
-//        }
-//        url = url.concat("clazz=").concat(AdEntity.class.getName());
+        String url = "http://"+instance.getHost()+":"+instance.getPort()+config.addIndexs;
+//        String data = JSONObject.toJSONString(contents.get(0));
+        for (AdEntity content: contents
+             ) {
+
+            String data = JSONObject.toJSONString(content);
+            dataList.add(data);
+            logger.info("获取的数据{}"+data);
+        }
         //开始调用spring-cloud的微服务
 
         logger.info("请求的url路径是:\t"+url);
-        return restTemplate.getForObject(url,Object.class);
+
+        MultiValueMap<String,Object> params = new LinkedMultiValueMap<>();
+
+//        params.add("id",contents.get(0).getId());
+        params.add("dataList",JSONObject.toJSON(dataList));
+        params.add("clazz",AdEntity.class.getName());
+
+      return restTemplate.postForEntity(url,params,Object.class);
     }
 
 
