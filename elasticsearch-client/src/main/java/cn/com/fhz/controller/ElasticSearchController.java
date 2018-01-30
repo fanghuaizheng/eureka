@@ -51,13 +51,6 @@ public class ElasticSearchController {
     @Autowired
     ElasticsearchComponent elasticsearchComponent;
 
-    @RequestMapping("add")
-    public Integer add(@RequestParam("a")Integer a, @RequestParam Integer b){
-
-        return a+b;
-
-    }
-
     /**
      *单个索引增加
      * @param id 操作的索引id
@@ -69,61 +62,60 @@ public class ElasticSearchController {
     public Object addIndex(@RequestParam("id") String id,@RequestParam("data") String data,
                            @RequestParam("clazz") Class clazz){
 
-        return data;
+        //存储操作的结果
+        JSONObject result = new JSONObject();
+        RestHighLevelClient client = null;
+        try {
+           //转化后的表
+           String type = clazz.getSimpleName();
 
-//        //存储操作的结果
-//        JSONObject result = new JSONObject();
-//        RestHighLevelClient client = null;
-//        try {
-//           //转化后的表
-//           String type = clazz.getSimpleName();
-//
-//
-//
-//           client = new RestHighLevelClient(RestClient.builder(
-//                   new HttpHost(config.url, config.port, config.schme)));
-//
-//
-//           IndexRequest indexRequest = null;
-//           if (StringUtils.isNotBlank(id)){
-//               indexRequest = new IndexRequest(config.index,type,id);
-//           }else {
-//               indexRequest = new IndexRequest(config.index, type);
-//
-//           }
-//
-//            indexRequest.source(data, XContentType.JSON);
-//
-//           IndexResponse indexResponse = client.index(indexRequest);
-//           if (indexResponse.getResult()== DocWriteResponse.Result.CREATED){
-//
-//               logger.info("创建成功");
-//
-//               commonUtils.putValue2Result(result,Constant.CREATE);
-//
-//
-//           }else if (indexResponse.getResult()==DocWriteResponse.Result.UPDATED){
-//               logger.info("更新成功");
-//
-//               commonUtils.putValue2Result(result,Constant.UPDATE);
-//
-//           }
-//
-//       }catch (Exception e){
-//           e.printStackTrace();
-//           commonUtils.putValue2Result(result,Constant.ERROR);
-//
-//       }finally {
-//
-//            ElasticsearchComponent.closeResurse(client);
-//
-//           return  result;
 
-//       }
+
+           client = new RestHighLevelClient(RestClient.builder(
+                   new HttpHost(config.url, config.port, config.schme)));
+
+
+           IndexRequest indexRequest = null;
+           if (StringUtils.isNotBlank(id)){
+               indexRequest = new IndexRequest(config.index,type,id);
+           }else {
+               indexRequest = new IndexRequest(config.index, type);
+
+           }
+
+            indexRequest.source(data, XContentType.JSON);
+
+           IndexResponse indexResponse = client.index(indexRequest);
+           if (indexResponse.getResult()== DocWriteResponse.Result.CREATED){
+
+               logger.info("创建成功");
+
+               commonUtils.putValue2Result(result,Constant.CREATE);
+
+
+           }else if (indexResponse.getResult()==DocWriteResponse.Result.UPDATED){
+               logger.info("更新成功");
+
+               commonUtils.putValue2Result(result,Constant.UPDATE);
+
+           }
+
+       }catch (Exception e){
+           e.printStackTrace();
+           commonUtils.putValue2Result(result,Constant.ERROR);
+
+       }finally {
+
+            ElasticsearchComponent.closeResurse(client);
+
+           return  result;
+
+       }
     }
 
     @RequestMapping("addIndexs")
-    public Object addIndex(List<String> dataList,Class clazz){
+    public Object addIndex(@RequestParam("dataList") String dataparam,
+                           @RequestParam("clazz") Class clazz){
 
         JSONObject result = new JSONObject();
         RestHighLevelClient client = null;
@@ -135,6 +127,7 @@ public class ElasticSearchController {
             String type = clazz.getSimpleName();
 
             BulkRequest bulkRequest = new BulkRequest();
+            List<String> dataList = JSONObject.parseArray(dataparam,String.class);
 
             for (String data: dataList
                  ) {
