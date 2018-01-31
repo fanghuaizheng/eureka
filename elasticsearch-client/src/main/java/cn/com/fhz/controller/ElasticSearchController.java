@@ -9,8 +9,10 @@ import cn.com.fhz.searchEntity.SearchResponseVO;
 import cn.com.fhz.searchEntity.SearchResquestVO;
 import cn.com.fhz.utils.CommonUtils;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -39,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,6 +54,7 @@ import java.util.Map;
  * 客户端 elasticsearch 的控制器
  * Created by hzfang on 2018/1/26.
  */
+@Api(value = "elasticsearch的控制器value",description = "elasticsearch客户端总入口")
 @RestController
 @RequestMapping("elasticsearch")
 public class ElasticSearchController {
@@ -75,7 +79,13 @@ public class ElasticSearchController {
      * @param clazz 操作的索引类型
      * @return
      */
-    @RequestMapping("addIndex")
+    @ApiOperation(value = "增加单个索引",notes = "根据传入的参数，生成指定类型的索引")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id",value = "索引创建的Id",required = false,dataType = "String"),
+            @ApiImplicitParam(name = "data",value = "索引的数据",required = true,dataType = "String"),
+            @ApiImplicitParam(name = "clazz",value = "操作的索引类型",required = true,dataType = "Class")
+    })
+    @PostMapping("addIndex")
     public Object addIndex(@RequestParam("id") String id, @RequestParam("data") String data,
                            @RequestParam("clazz") Class clazz) {
 
@@ -129,7 +139,13 @@ public class ElasticSearchController {
         }
     }
 
-    @RequestMapping("addIndexs")
+    @ApiOperation(value = "批量增加索引,",notes = "批量增加索引")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "dataList",value = "List集合转的String格式",required = true,dataType = "String"),
+            @ApiImplicitParam(name = "clazz",value = "增加索引的类对象",required = true,dataType = "Class")
+
+    })
+    @PostMapping("addIndexs")
     public Object addIndex(@RequestParam("dataList") String dataparam,
                            @RequestParam("clazz") Class clazz) {
 
@@ -185,7 +201,9 @@ public class ElasticSearchController {
      * 搜索的总入口
      * @return
      */
-    @RequestMapping("search")
+    @ApiOperation(value = "搜索总入口",notes = "指定的接受对象，来搜索结果")
+    @ApiImplicitParam(name = "searchRequestVO",value = "搜索的类，转成Strin传输",required = true,dataType = "String")
+    @PostMapping("search")
     public Object search(@RequestParam("searchRequestVO") String vo) {
 
 
