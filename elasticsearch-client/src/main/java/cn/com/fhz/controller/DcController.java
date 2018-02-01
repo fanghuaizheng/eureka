@@ -46,8 +46,10 @@ public class DcController {
 
 
     //获取传参的类名称
+    @ApiOperation(value = "获取传如类对象的名称",notes = "获取传如类对象的名称")
+    @ApiImplicitParam(name = "clazz",value = "传入类对象",required = true,dataType = "Class")
     @GetMapping("clazz")
-    public String testClazz(Class clazz){
+    public String testClazz(@RequestParam("clazz") Class clazz){
         return clazz.getSimpleName();
     }
 

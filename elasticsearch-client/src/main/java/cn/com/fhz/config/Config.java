@@ -23,4 +23,10 @@ public class Config {
     @Value("${elasticsearch.schme:http}")
     public String schme;
 
+    @Value("${security.user.name}")
+    public String name;
+
+    @Value("${security.user.password}")
+    public String password;
+
 }
