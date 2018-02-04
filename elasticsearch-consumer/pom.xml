@@ -82,11 +82,7 @@
 
 		<!--数据库配置 end-->
 
-		<dependency>
-			<groupId>cn.com.fhz</groupId>
-			<artifactId>elasticsearch-base</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+
 		<!--普通的依赖 start-->
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -101,7 +97,11 @@
 			<groupId>cn.com.fhz</groupId>
 			<artifactId>elasticsearch-base</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<!--<scope>system</scope>-->
+			<!--<systemPath>/Users/woni/Documents/Intellij/eureka/elasticsearch-base/target/elasticsearch-base-0.0.1-SNAPSHOT.jar</systemPath>-->
+
 		</dependency>
+
 
 	</dependencies>
 	<dependencyManagement>
@@ -113,6 +113,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -121,6 +122,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<includeSystemScope>true</includeSystemScope>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

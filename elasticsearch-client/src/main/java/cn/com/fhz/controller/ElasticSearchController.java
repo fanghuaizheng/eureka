@@ -202,7 +202,8 @@ public class ElasticSearchController {
      * @return
      */
     @ApiOperation(value = "搜索总入口",notes = "指定的接受对象，来搜索结果")
-    @ApiImplicitParam(name = "searchRequestVO",value = "搜索的类，转成Strin传输",required = true,dataType = "String")
+    @ApiImplicitParam(name = "searchRequestVO",value = "搜索的类，转成String传输",required = true,paramType = "query",
+            dataType = "String")
     @PostMapping("search")
     public Object search(@RequestParam("searchRequestVO") String vo) {
 
@@ -210,7 +211,20 @@ public class ElasticSearchController {
         SearchResponseVO searchResponseVO = new SearchResponseVO();
         SearchResquestVO searchResquestVO = JSONObject.parseObject(vo, SearchResquestVO.class);
 
+
+
         ArrayList<Object> data = new ArrayList<>();
+
+        //先判断参数是否有为空的
+        if (searchResquestVO.getField()==null||searchResquestVO.getValue()==null){
+
+            MySearchResult isNull = MySearchResult.PARAM_IS_NULL;
+
+            commonUtils.putValue2Result(searchResponseVO,isNull,data);
+
+            return searchResponseVO;
+        }
+
         try {
 
             RestHighLevelClient client = elasticsearchComponent.getClient();
@@ -271,6 +285,10 @@ public class ElasticSearchController {
                     ) {
                 Map<String, Object> sourceAsMap = hit.getSourceAsMap();
                 Class responseClazz = searchResquestVO.getResponseClazz();
+                //如果没有传入返回的类类型，那么用父类，OBject
+                if (responseClazz==null){
+                    responseClazz = Object.class;
+                }
                 Map<String, HighlightField> highlightFields = hit.getHighlightFields();
                 HighlightField highlightField = highlightFields.get(searchResquestVO.getField());
                 Text[] texts = highlightField.fragments();

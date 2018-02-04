@@ -5,7 +5,10 @@ package cn.com.fhz.searchEntity;
  */
 public enum  MySearchResult {
 
-    SUCCESS(200,"成功"),ERROR(500,"发生错误");
+    SUCCESS(200,"成功"),
+    PARAM_IS_NULL(400,"传入的参数为空，请检查，field与value"),
+
+    ERROR(500,"发生错误");
 
     private Integer code;
 
