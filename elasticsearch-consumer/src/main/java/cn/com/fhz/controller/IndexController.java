@@ -1,8 +1,10 @@
-package cn.com.fhz.Controller;
+package cn.com.fhz.controller;
 
 import cn.com.fhz.config.Config;
 import cn.com.fhz.entity.AdEntity;
+import cn.com.fhz.searchEntity.SearchResquestVO;
 import cn.com.fhz.service.AdService;
+import cn.com.fhz.utils.CommonUtils;
 import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -51,7 +54,7 @@ public class IndexController {
     }
 
 
-    @RequestMapping("addAll")
+    @GetMapping("addAll")
     public Object insertAllContent2Index() throws Exception {
 
         List<AdEntity> contents = adService.findAll();
@@ -80,6 +83,7 @@ public class IndexController {
 
       return restTemplate.postForEntity(url,params,Object.class);
     }
+
 
 
 }

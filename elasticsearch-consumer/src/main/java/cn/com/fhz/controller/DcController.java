@@ -1,4 +1,4 @@
-package cn.com.fhz.Controller;
+package cn.com.fhz.controller;
 
 import cn.com.fhz.entity.AdEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +31,13 @@ public class DcController {
 
     }
 
-    @GetMapping("add")
-    public Integer add(Integer a,String b){
-        ServiceInstance instance = loadBalancerClient.choose("elasticsearch-client");
-        String url = "http://"+instance.getHost()+":"+instance.getPort()+"/dc/add?a="+a+"&b="+b;
-        System.out.println(url);
-        return restTemplate.getForObject(url,Integer.class);
-    }
+//    @GetMapping("add")
+//    public Integer add(Integer a,String b){
+//        ServiceInstance instance = loadBalancerClient.choose("elasticsearch-client");
+//        String url = "http://"+instance.getHost()+":"+instance.getPort()+"/dc/add?a="+a+"&b="+b;
+//        System.out.println(url);
+//        return restTemplate.getForObject(url,Integer.class);
+//    }
 
     @GetMapping("testClazz")
     public String testClazz(){
