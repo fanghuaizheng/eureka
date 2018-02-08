@@ -30,7 +30,7 @@ public class Page2GoController {
         return "login";
     }
 
-    @RequestMapping("info")
+    @RequestMapping("/info123")
     public void returnAPI(HttpServletResponse respoinse){
         try {
             respoinse.sendRedirect("swagger-ui.html");
