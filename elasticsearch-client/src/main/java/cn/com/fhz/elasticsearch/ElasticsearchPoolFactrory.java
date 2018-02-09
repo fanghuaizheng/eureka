@@ -1,15 +1,11 @@
 package cn.com.fhz.elasticsearch;
 
-import cn.com.fhz.config.Config;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -17,12 +13,15 @@ import java.io.IOException;
  * Created by hzfang on 2018/1/26.
  * 后期准备做连接池设置
  */
-@Component
 public class ElasticsearchPoolFactrory implements PooledObjectFactory<RestHighLevelClient> {
 
+    private ElasticsearchPoolConfig elasticsearchPoolConfig = new ElasticsearchPoolConfig();
 
-    @Autowired
-    Config config;
+    public ElasticsearchPoolFactrory(){}
+
+    public ElasticsearchPoolFactrory(ElasticsearchPoolConfig config){
+        this.elasticsearchPoolConfig = config;
+    }
 
     /**
      * 生产一个连接对象
@@ -32,7 +31,9 @@ public class ElasticsearchPoolFactrory implements PooledObjectFactory<RestHighLe
     @Override
     public PooledObject<RestHighLevelClient> makeObject() throws Exception {
 
-        RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost(config.url, config.port, config.schme)));
+        RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(
+                new HttpHost(elasticsearchPoolConfig.getUrl(), elasticsearchPoolConfig.getPort(),
+                        elasticsearchPoolConfig.getSchema())));
 
          return new DefaultPooledObject<RestHighLevelClient>(client);
 
@@ -70,7 +71,6 @@ public class ElasticsearchPoolFactrory implements PooledObjectFactory<RestHighLe
      * 什么时候会调用此方法
      * 1：从资源池中获取资源的时候
      * 2：资源回收线程，回收资源的时候，根据配置的 testWhileIdle 参数，判断 是否执行 factory.activateObject()方法，true 执行，false 不执行
-     * @param arg0
      */
     @Override
     public void activateObject(PooledObject<RestHighLevelClient> pooledObject) throws Exception {
@@ -90,10 +90,5 @@ public class ElasticsearchPoolFactrory implements PooledObjectFactory<RestHighLe
     }
 
 
-    public static void main(String[] args) {
-
-
-
-    }
 
 }

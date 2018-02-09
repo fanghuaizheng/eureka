@@ -14,7 +14,7 @@ public class ConfigReadUtils {
 
     private static Logger logger = LoggerFactory.getLogger(ConfigReadUtils.class);
 
-    private static final String defaultConfigPath = "application.properties";
+    private static final String defaultConfigPath = "application-elasticsearch.properties";
 
     public static Configuration getProperties(String path){
         Configuration prop = null;
