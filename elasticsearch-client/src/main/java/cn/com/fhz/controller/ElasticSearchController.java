@@ -3,6 +3,7 @@ package cn.com.fhz.controller;
 import cn.com.fhz.component.ElasticsearchComponent;
 import cn.com.fhz.config.Config;
 import cn.com.fhz.constant.Constant;
+import cn.com.fhz.elasticsearch.ElasticsearchConnentFactroy;
 import cn.com.fhz.searchEntity.MySearchResult;
 import cn.com.fhz.searchEntity.SearchResponseVO;
 import cn.com.fhz.searchEntity.SearchResquestVO;
@@ -97,8 +98,7 @@ public class ElasticSearchController {
             String type = clazz.getSimpleName();
 
 
-            client = new RestHighLevelClient(RestClient.builder(
-                    new HttpHost(config.url, config.port, config.schme)));
+            client = ElasticsearchConnentFactroy.getClient();
 
 
             IndexRequest indexRequest = null;
