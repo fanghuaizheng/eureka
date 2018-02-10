@@ -21,6 +21,8 @@ public class ElasticsearchConnentFactroy {
 
    private static ElasticsearchPoolConfig elasticsearchPoolConfig = new ElasticsearchPoolConfig();
 
+   private static GenericObjectPool<RestHighLevelClient> pool = null;
+
     /**
      * 获取默认的连接
      * @return
@@ -30,7 +32,9 @@ public class ElasticsearchConnentFactroy {
         logger.info("根据默认的配置文件，获取连接客户连接");
         RestHighLevelClient client = null;
 
-        GenericObjectPool<RestHighLevelClient> pool = new GenericObjectPool<>(elasticsearchPoolFactrory, elasticsearchPoolConfig.getConfig());
+        if (pool==null){
+            pool = new GenericObjectPool<>(elasticsearchPoolFactrory, elasticsearchPoolConfig.getConfig());
+        }
 
         try {
             client =  pool.borrowObject();
@@ -58,7 +62,10 @@ public class ElasticsearchConnentFactroy {
 
         RestHighLevelClient client = null;
 
-        GenericObjectPool<RestHighLevelClient> pool = new GenericObjectPool<>(elasticsearchPoolFactrory, elasticsearchPoolConfig.getConfig());
+        if (pool==null){
+           pool  = new GenericObjectPool<>(elasticsearchPoolFactrory, elasticsearchPoolConfig.getConfig());
+        }
+
 
         try {
             client =  pool.borrowObject();

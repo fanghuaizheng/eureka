@@ -1,5 +1,6 @@
 package cn.com.fhz;
 
+import cn.com.fhz.elasticsearch.ElasticsearchConnentFactroy;
 import cn.com.fhz.elasticsearch.ElasticsearchPoolFactrory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -14,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ElasticsearchClientApplicationTests {
 
 	@Autowired
-	ElasticsearchPoolFactrory elasticsearchPoolFactrory;
+	ElasticsearchConnentFactroy connentFactroy;
 
 
 	@Test
@@ -23,41 +24,54 @@ public class ElasticsearchClientApplicationTests {
 
 	@Test
 	public void testElasticsearchPool(){
-		ElasticsearchPoolFactrory poolFactrory = new ElasticsearchPoolFactrory();
 
-		GenericObjectPool<RestHighLevelClient> pool = new GenericObjectPool<>(poolFactrory);
+		ThreadA threadA = new ThreadA();
 
-		RestHighLevelClient client = null;
+		threadA.setConnentFactroy(connentFactroy);
 
-//        new StackObjectPool(poolFactrory);
+		ThreadA threadA1 = new ThreadA();
 
-		try {
-			for(int i = 0; i < 5; i++) {
-				System.out.println("\n==========="+i+"===========");
-				System.out.println("池中处于闲置状态的实例pool.getNumIdle()："+pool.getNumIdle());
-				//从池里取一个对象，新创建makeObject或将以前闲置的对象取出来
-				client = (RestHighLevelClient)pool.borrowObject();
-				System.out.println("bo:"+client);
-				System.out.println("池中所有在用实例数量pool.getNumActive()："+pool.getNumActive());
-				if((i%2) == 0) {
-					//用完之后归还对象
-					pool.returnObject(client);
-					System.out.println("归还对象！！！！");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(client != null) {
-					pool.returnObject(client);
-				}
-				//关闭池
-				pool.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		threadA1.setConnentFactroy(connentFactroy);
+
+		Thread a = new Thread(threadA);
+
+		Thread b = new Thread(threadA1);
+
+		a.start();
+
+		b.start();
+
+
+
+
 	}
 
+}
+
+class ThreadA implements Runnable{
+
+	private ElasticsearchConnentFactroy connentFactroy = null;
+
+	public ElasticsearchConnentFactroy getConnentFactroy() {
+		return connentFactroy;
+	}
+
+	public void setConnentFactroy(ElasticsearchConnentFactroy connentFactroy) {
+		this.connentFactroy = connentFactroy;
+	}
+
+	@Override
+	public void run() {
+
+		RestHighLevelClient client = connentFactroy.getClient();
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+
+		System.out.println(client);
+
+	}
 }
